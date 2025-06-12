@@ -1,19 +1,24 @@
 import React from 'react';
-import { BiLogOut } from 'react-icons/bi';
+import { LogOut } from 'lucide-react';
 import useLogout from '../../hooks/useLogout';
 
 const LogoutButton = () => {
-
   const {loading, logout} = useLogout();
+
   return (
     <div className="mt-auto">
       {!loading ? (
-        <button className="w-full flex items-center gap-2 p-2 hover:bg-black/40 rounded-lg transition-all duration-300" onClick={logout}>
-        <BiLogOut className="w-6 h-6 text-white group-hover:text-purple-400" />{" "}
-        Logout
-      </button>
+        <button 
+          className="flex items-center gap-3 w-full p-2 hover:bg-dark-600 rounded-md transition-all duration-300 text-gray-400 hover:text-white" 
+          onClick={logout}
+        >
+          <LogOut className="w-5 h-5" />
+          <span>Logout</span>
+        </button>
       ) : (
-        <span className='loading loading-spinner'></span>
+        <div className="flex justify-center">
+          <div className="w-6 h-6 border-2 border-t-transparent border-accent-blue rounded-full animate-spin"></div>
+        </div>
       )}
     </div>
   );

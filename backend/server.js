@@ -6,17 +6,16 @@ import authRoutes from './routes/auth.routes.js';
 import messageRoutes from './routes/message.routes.js';
 import userRoutes from './routes/user.routes.js';
 
-
 import connectToMongoDB from "./db/connectToMongoDB.js";
 import { app, server } from "./socket/socket.js";
 
 import path from 'path';
 
-dotenv.config();
+const __dirname=path.resolve();
+
+dotenv.config({ path: path.join(__dirname, 'backend', '.env') });
 
 const PORT=process.env.PORT || 5000;
-
-const __dirname=path.resolve();
 
 app.use(express.json()); //to parse the incoming requests with JSON payload (from req.body)
 app.use(cookieParser());

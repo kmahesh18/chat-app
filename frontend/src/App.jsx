@@ -10,13 +10,22 @@ function App() {
   const {authUser} = useAuthContext();
 
   return (
-    <div className='p-4 h-screen flex items-center justify-center'>
+    <div className='h-screen w-screen overflow-hidden'>
       <Routes>
         <Route path='/' element={authUser ? <Home /> : <Navigate to={'/login'}/>}/>
         <Route path='/login' element={authUser ? <Navigate to='/' /> : <Login /> }/>
         <Route path='/signup' element={authUser ? <Navigate to='/' /> : <SignUp /> }/>
       </Routes>
-      <Toaster/>
+      <Toaster 
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: '#1A1A1A',
+            color: '#fff',
+            border: '1px solid #2C2C2C'
+          },
+        }}
+      />
     </div>
   )
 }
