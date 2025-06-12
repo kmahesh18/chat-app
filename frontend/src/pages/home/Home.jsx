@@ -1,38 +1,37 @@
-import React from 'react';
-import Sidebar from '../../components/sidebar/Sidebar';
-import MessageContainer from '../../components/messages/MessageContainer';
+import React from "react";
+import Sidebar from "../../components/sidebar/Sidebar";
+import MessageContainer from "../../components/messages/MessageContainer";
 
 const Home = () => {
   return (
-    <div className="h-screen w-screen bg-dark-900 relative overflow-hidden">
-      {/* Grid Background */}
-      <div className="absolute inset-0 grid-bg opacity-20"></div>
-      
-      {/* Animated Background Elements */}
+    <div className="h-screen w-screen bg-black grid-lines relative overflow-hidden">
+      {/* Geometric Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-accent-blue/5 rounded-full mix-blend-screen filter blur-3xl animate-blob"></div>
-        <div className="absolute bottom-0 right-1/4 w-64 h-64 md:w-96 md:h-96 bg-accent-purple/5 rounded-full mix-blend-screen filter blur-3xl animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-1/4 left-1/2 w-64 h-64 md:w-96 md:h-96 bg-accent-teal/5 rounded-full mix-blend-screen filter blur-3xl animate-blob animation-delay-4000"></div>
-        
-        {/* Corner accents */}
-        <div className="absolute top-0 left-0 w-40 h-40 border-r border-b border-accent-blue/10"></div>
-        <div className="absolute bottom-0 right-0 w-40 h-40 border-l border-t border-accent-purple/10"></div>
+        {/* Corner Accents */}
+        <div className="absolute top-0 left-0 w-20 h-20 border-r border-b border-white/5"></div>
+        <div className="absolute top-0 right-0 w-20 h-20 border-l border-b border-white/5"></div>
+        <div className="absolute bottom-0 left-0 w-20 h-20 border-r border-t border-white/5"></div>
+        <div className="absolute bottom-0 right-0 w-20 h-20 border-l border-t border-white/5"></div>
+
+        {/* Subtle Animated Lines */}
+        <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse2D"></div>
+        <div className="absolute left-1/3 top-0 w-px h-full bg-gradient-to-b from-transparent via-white/5 to-transparent animate-pulse2D delay-300"></div>
       </div>
-      
-      <div className="h-full w-full flex items-center justify-center p-0 sm:p-2 md:p-4 animate-fadeInUp">
-        <div className="w-full h-full max-w-7xl flex rounded-none sm:rounded-xl overflow-hidden border-0 sm:border border-dark-500/50 shadow-2xl">
+
+      <div className="h-full w-full flex p-0 sm:p-2 md:p-4 animate-slideUp2D">
+        <div className="w-full h-full max-w-7xl mx-auto flex border-0 sm:border border-white/10 bg-black/80 backdrop-blur-sm">
           {/* Sidebar */}
-          <div className="w-full sm:w-80 lg:w-96 h-full flex-shrink-0 border-r border-dark-500/50 bg-dark-800/80 backdrop-blur-md">
+          <div className="w-full sm:w-80 lg:w-96 h-full flex-shrink-0 border-r border-white/10 bg-black/90 animate-slideIn2D">
             <Sidebar />
           </div>
-          
-          {/* Message Container */}
-          <div className="hidden sm:flex flex-1 bg-dark-700/80 backdrop-blur-md">
+
+          {/* Message Container - Desktop */}
+          <div className="hidden sm:flex flex-1 bg-black/60 animate-slideIn2D delay-200">
             <MessageContainer />
           </div>
-          
-          {/* Mobile Message Container */}
-          <div className="sm:hidden flex flex-1 bg-dark-700/80 backdrop-blur-md">
+
+          {/* Message Container - Mobile */}
+          <div className="sm:hidden flex flex-1 bg-black/60 animate-slideIn2D delay-200">
             <MessageContainer />
           </div>
         </div>
