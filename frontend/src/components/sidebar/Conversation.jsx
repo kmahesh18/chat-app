@@ -1,52 +1,90 @@
-import React from 'react';
-import useConversation from '../../zustand/useConversation';
-import { useSocketContext } from '../../context/SocketContext';
+import React from "react";
+import useConversation from "../../zustand/useConversation";
+import { useSocketContext } from "../../context/SocketContext";
 
-const Conversation = ({conversation, lastIdx, emoji}) => {
-  const {selectedConversation, setSelectedConversation} = useConversation();
+const Conversation = ({ conversation, lastIdx, emoji }) => {
+  const { selectedConversation, setSelectedConversation } = useConversation();
   const isSelected = selectedConversation?._id === conversation._id;
-  const {onlineUsers} = useSocketContext();
+  const { onlineUsers } = useSocketContext();
   const isOnline = onlineUsers.includes(conversation._id);
-  
+
   return (
-    <div className={`group mb-1 ${isSelected ? "animate-pulse-slow" : ""}`}>
-      <div 
-        className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-all duration-300
-          ${isSelected 
-            ? "bg-gradient-to-r from-dark-700/80 to-dark-600/80 border-l-2 border-accent-blue shadow-sm" 
-            : "hover:bg-dark-700/50"}`}
+    <div
+      className={`animate-slideIn2D delay-${Math.min(500 + lastIdx * 100, 1000)}`}
+    >
+      <div
+        className={`group relative p-3 cursor-pointer transition-all duration-300 border-l-2 glass-hover
+          ${
+            isSelected
+              ? "bg-white/10 border-l-white"
+              : "bg-transparent border-l-transparent hover:bg-white/5 hover:border-l-white/30"
+          }`}
         onClick={() => setSelectedConversation(conversation)}
       >
-        <div className="relative">
-          {/* User avatar with online indicator */}
-          <div className={`w-10 h-10 rounded-full border ${isSelected ? "border-accent-blue/50" : "border-dark-500"} overflow-hidden`}>
-            <img 
-              src={conversation.profilePic} 
-              alt={conversation.fullName} 
-              className="w-full h-full object-cover"
-            />
+        {/* Background Pattern for Selected */}
+        {isSelected && (
+          <div className="absolute inset-0 bg-pattern opacity-20 pointer-events-none"></div>
+        )}
+
+        <div className="flex items-center gap-3 relative z-10">
+          {/* Avatar with geometric frame */}
+          <div className="relative">
+            <div
+              className={`w-10 h-10 border-2 overflow-hidden relative ${
+                isSelected ? "border-white" : "border-white/30"
+              }`}
+            >
+              <img
+                src={conversation.profilePic}
+                alt={conversation.fullName}
+                className="w-full h-full object-cover"
+              />
+              {/* Geometric overlay */}
+              <div className="absolute inset-0 border border-white/10"></div>
+            </div>
+
+            {/* Online Status - Geometric Indicator */}
+            {isOnline && (
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-white border-2 border-black animate-pulse2D"></div>
+            )}
           </div>
-          
-          {/* Online status indicator */}
-          {isOnline && (
-            <div className="absolute bottom-0 right-0 w-3 h-3 bg-accent-green rounded-full border-2 border-dark-800"></div>
-          )}
-        </div>
-        
-        <div className="flex-1">
-          <div className="flex justify-between items-center">
-            <h3 className={`font-medium text-sm truncate ${isSelected ? "text-white" : "text-gray-300"} group-hover:text-white transition-colors duration-300`}>
-              {conversation.fullName}
-            </h3>
-            <span className="text-base opacity-70">{emoji}</span>
+
+          {/* User Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex justify-between items-start">
+              <h3
+                className={`font-bold text-sm text-mono truncate transition-colors duration-300 ${
+                  isSelected
+                    ? "text-white"
+                    : "text-white/80 group-hover:text-white"
+                }`}
+              >
+                {conversation.fullName.toUpperCase()}
+              </h3>
+              <span className="text-lg ml-2 opacity-60">{emoji}</span>
+            </div>
+
+            {/* Status Line */}
+            <div className="flex items-center gap-2 mt-1">
+              <div
+                className={`w-2 h-px transition-colors duration-300 ${
+                  isOnline ? "bg-white" : "bg-white/30"
+                }`}
+              ></div>
+              <span className="text-xs text-white/50 text-mono">
+                {isOnline ? "ONLINE" : "OFFLINE"}
+              </span>
+              <div className="flex-1 h-px bg-white/10"></div>
+            </div>
           </div>
-          
-          {/* Optional: Last message preview */}
-          <p className="text-xs text-gray-500 truncate">Tap to view conversation</p>
         </div>
+
+        {/* Hover Effect Lines */}
+        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
-      
-      {!lastIdx && <div className="h-px bg-dark-500/30 my-1 mx-2"></div>}
+
+      {/* Separator */}
+      {!lastIdx && <div className="mx-4 h-px bg-white/5"></div>}
     </div>
   );
 };
