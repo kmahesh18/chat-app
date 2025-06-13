@@ -15,6 +15,10 @@ const messageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    encrypted: {
+        type: Boolean,
+        default: false
+    },
     // createdAt, updatedAt => message.createdAt ex:- 15:30
 },{timestamps: true});
 

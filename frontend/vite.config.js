@@ -23,7 +23,8 @@ export default defineConfig({
         manualChunks: {
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
-          ui: ['lucide-react', 'react-hot-toast']
+          ui: ['lucide-react', 'react-hot-toast'],
+          crypto: ['crypto-js']
         }
       }
     }

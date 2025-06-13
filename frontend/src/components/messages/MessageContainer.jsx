@@ -7,25 +7,28 @@ import {
   MoreVertical,
   Monitor,
   Wifi,
+  Lock,
+  Menu
 } from "lucide-react";
 import useConversation from "../../zustand/useConversation";
 import { useAuthContext } from "../../context/AuthContext";
 import { useSocketContext } from "../../context/SocketContext";
 
-const MessageContainer = () => {
+const MessageContainer = ({ onOpenSidebar }) => {
   const { selectedConversation, setSelectedConversation } = useConversation();
   const { onlineUsers } = useSocketContext();
   const isOnline =
     selectedConversation && onlineUsers.includes(selectedConversation._id);
 
   useEffect(() => {
+    // Clean up on unmount
     return () => setSelectedConversation(null);
   }, [setSelectedConversation]);
 
   return (
     <div className="h-full flex flex-col bg-black/40">
       {!selectedConversation ? (
-        <NoChatSelected />
+        <NoChatSelected onOpenSidebar={onOpenSidebar} />
       ) : (
         <>
           {/* Chat Header */}
@@ -34,9 +37,17 @@ const MessageContainer = () => {
               {/* Back button for mobile */}
               <button
                 onClick={() => setSelectedConversation(null)}
-                className="sm:hidden p-2 mr-3 border border-white/20 hover:bg-white/10 transition-colors"
+                className="md:hidden p-2 mr-3 border border-white/20 hover:bg-white/10 transition-colors"
               >
                 <ArrowLeft className="w-5 h-5 text-white" />
+              </button>
+              
+              {/* Menu button for sidebar on mobile */}
+              <button
+                onClick={onOpenSidebar}
+                className="md:hidden p-2 mr-3 border border-white/20 hover:bg-white/10 transition-colors"
+              >
+                <Menu className="w-5 h-5 text-white" />
               </button>
 
               {/* User Info */}
@@ -69,6 +80,8 @@ const MessageContainer = () => {
                     <Wifi
                       className={`w-3 h-3 ${isOnline ? "text-white" : "text-white/30"}`}
                     />
+                    <Lock className="w-3 h-3 text-white/60" />
+                    <span className="text-xs text-white/60 text-mono">ENCRYPTED</span>
                   </div>
                 </div>
               </div>
@@ -95,11 +108,19 @@ const MessageContainer = () => {
   );
 };
 
-const NoChatSelected = () => {
+const NoChatSelected = ({ onOpenSidebar }) => {
   const { authUser } = useAuthContext();
 
   return (
     <div className="flex items-center justify-center w-full h-full p-8 bg-black/20 animate-slideUp2D">
+      {/* Menu button for sidebar on mobile */}
+      <button
+        onClick={onOpenSidebar}
+        className="md:hidden absolute top-4 left-4 p-2 border border-white/20 hover:bg-white/10 transition-colors"
+      >
+        <Menu className="w-5 h-5 text-white" />
+      </button>
+      
       <div className="text-center flex flex-col items-center max-w-md">
         {/* Geometric Logo */}
         <div className="relative mb-8 animate-expand2D">
@@ -132,7 +153,7 @@ const NoChatSelected = () => {
             </div>
             <div className="w-px h-4 bg-white/20"></div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 border border-white/30 animate-pulse2D delay-300"></div>
+              <Lock className="w-3 h-3 text-white/40" />
               <span>ENCRYPTED</span>
             </div>
           </div>

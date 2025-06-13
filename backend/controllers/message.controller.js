@@ -4,9 +4,10 @@ import { getReceiverSocketId, io } from '../socket/socket.js';
 
 export const sendMessage=async (req, res) => {
     try {
-        const {message} = req.body;
+        const {message, encrypted} = req.body;
         const {id: receiverId} = req.params;
         const senderId = req.user._id;
+        const senderName = req.user.fullName; // Include sender name
 
         let conversation = await Conversation.findOne({
             participants: {$all: [senderId, receiverId]},
@@ -22,26 +23,26 @@ export const sendMessage=async (req, res) => {
             senderId,
             receiverId,
             message,
+            encrypted: !!encrypted
         })
         if(newMessage){
             conversation.messages.push(newMessage._id);
         }
 
-        // await conversation.save();
-        // await newMessage.save();
-
         // this will run in parallel
         await Promise.all([conversation.save(), newMessage.save()]);
         
-
+        // Add sender name to the socket message (without saving to DB)
+        const messageWithSender = {
+            ...newMessage.toObject(),
+            senderName
+        };
+        
         // SOCKET IO functionality will go here
         const receiverSocketId = getReceiverSocketId(receiverId);
         if(receiverSocketId) {
-            //io.to(<socket_id>).emit() is used to send events to specific client(not all clients)
-            io.to(receiverSocketId).emit("newMessage", newMessage);
+            io.to(receiverSocketId).emit("newMessage", messageWithSender);
         }
-
-
 
         res.status(201).json(newMessage);
 
@@ -50,7 +51,6 @@ export const sendMessage=async (req, res) => {
         res.status(500).json({error: "Internal Server Error"});
     }
 };
-
 
 export const getMessages = async (req, res) => {
     try {
