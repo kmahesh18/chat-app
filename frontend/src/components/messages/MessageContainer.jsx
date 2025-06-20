@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Messages from "./Messages";
-import MessageInput from "./MessageInput";
+import MessageInputEnhanced from "./MessageInputEnhanced";
 import {
   MessageSquare,
   ArrowLeft,
@@ -8,7 +8,9 @@ import {
   Monitor,
   Wifi,
   Lock,
-  Menu
+  Menu,
+  Bot,
+  Sparkles,
 } from "lucide-react";
 import useConversation from "../../zustand/useConversation";
 import { useAuthContext } from "../../context/AuthContext";
@@ -41,7 +43,7 @@ const MessageContainer = ({ onOpenSidebar }) => {
               >
                 <ArrowLeft className="w-5 h-5 text-white" />
               </button>
-              
+
               {/* Menu button for sidebar on mobile */}
               <button
                 onClick={onOpenSidebar}
@@ -54,15 +56,28 @@ const MessageContainer = ({ onOpenSidebar }) => {
               <div className="flex items-center flex-1">
                 <div className="relative mr-4">
                   <div className="w-12 h-12 border-2 border-white/30 overflow-hidden relative">
-                    <img
-                      src={selectedConversation.profilePic}
-                      alt={selectedConversation.fullName}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 border border-white/10"></div>
+                    {selectedConversation.isAI ? (
+                      <div className="w-full h-full bg-black/60 flex items-center justify-center">
+                        <Bot className="w-6 h-6 text-white" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent animate-pulse2D"></div>
+                      </div>
+                    ) : (
+                      <>
+                        <img
+                          src={selectedConversation.profilePic}
+                          alt={selectedConversation.fullName}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 border border-white/10"></div>
+                      </>
+                    )}
                   </div>
-                  {isOnline && (
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-white border-2 border-black animate-pulse2D"></div>
+                  {(isOnline || selectedConversation.isAI) && (
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-white border-2 border-black animate-pulse2D">
+                      {selectedConversation.isAI && (
+                        <Sparkles className="w-2 h-2 text-black absolute top-0.5 left-0.5" />
+                      )}
+                    </div>
                   )}
                 </div>
 
@@ -72,16 +87,33 @@ const MessageContainer = ({ onOpenSidebar }) => {
                   </h3>
                   <div className="flex items-center gap-2 mt-1">
                     <div
-                      className={`w-2 h-px ${isOnline ? "bg-white" : "bg-white/30"}`}
+                      className={`w-2 h-px ${isOnline || selectedConversation.isAI ? "bg-white" : "bg-white/30"}`}
                     ></div>
                     <span className="text-xs text-white/60 text-mono">
-                      {isOnline ? "ONLINE" : "OFFLINE"}
+                      {selectedConversation.isAI
+                        ? "AI_ASSISTANT"
+                        : isOnline
+                          ? "ONLINE"
+                          : "OFFLINE"}
                     </span>
-                    <Wifi
-                      className={`w-3 h-3 ${isOnline ? "text-white" : "text-white/30"}`}
-                    />
-                    <Lock className="w-3 h-3 text-white/60" />
-                    <span className="text-xs text-white/60 text-mono">ENCRYPTED</span>
+                    {selectedConversation.isAI ? (
+                      <>
+                        <Bot className="w-3 h-3 text-white/60" />
+                        <span className="text-xs text-white/60 text-mono">
+                          GEMINI
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <Wifi
+                          className={`w-3 h-3 ${isOnline ? "text-white" : "text-white/30"}`}
+                        />
+                        <Lock className="w-3 h-3 text-white/60" />
+                        <span className="text-xs text-white/60 text-mono">
+                          ENCRYPTED
+                        </span>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -100,7 +132,7 @@ const MessageContainer = ({ onOpenSidebar }) => {
 
           {/* Message Input */}
           <div className="animate-slideUp2D delay-400">
-            <MessageInput />
+            <MessageInputEnhanced />
           </div>
         </>
       )}
@@ -120,7 +152,7 @@ const NoChatSelected = ({ onOpenSidebar }) => {
       >
         <Menu className="w-5 h-5 text-white" />
       </button>
-      
+
       <div className="text-center flex flex-col items-center max-w-md">
         {/* Geometric Logo */}
         <div className="relative mb-8 animate-expand2D">
