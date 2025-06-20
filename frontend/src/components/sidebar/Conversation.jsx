@@ -2,11 +2,16 @@ import React from "react";
 import useConversation from "../../zustand/useConversation";
 import { useSocketContext } from "../../context/SocketContext";
 
-const Conversation = ({ conversation, lastIdx, emoji }) => {
+const Conversation = ({ conversation, lastIdx, emoji, onSelect }) => {
   const { selectedConversation, setSelectedConversation } = useConversation();
   const isSelected = selectedConversation?._id === conversation._id;
   const { onlineUsers } = useSocketContext();
   const isOnline = onlineUsers.includes(conversation._id);
+
+  const handleSelect = () => {
+    setSelectedConversation(conversation);
+    onSelect && onSelect();
+  };
 
   return (
     <div
@@ -19,7 +24,7 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
               ? "bg-white/10 border-l-white"
               : "bg-transparent border-l-transparent hover:bg-white/5 hover:border-l-white/30"
           }`}
-        onClick={() => setSelectedConversation(conversation)}
+        onClick={handleSelect}
       >
         {/* Background Pattern for Selected */}
         {isSelected && (
